@@ -1,0 +1,275 @@
+# Source: kube-prometheus-stack/charts/kube-state-metrics/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ada-kube-state-metrics
+  namespace: monitoring
+  labels:    
+    helm.sh/chart: kube-state-metrics-4.7.0
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: metrics
+    app.kubernetes.io/part-of: kube-state-metrics
+    app.kubernetes.io/name: kube-state-metrics
+    app.kubernetes.io/instance: ada
+    app.kubernetes.io/version: "2.4.1"
+    release: ada
+  annotations:
+    prometheus.io/scrape: 'true'
+spec:
+  type: "ClusterIP"
+  ports:
+  - name: "http"
+    protocol: TCP
+    port: 8080
+    targetPort: 8080
+  
+  selector:    
+    app.kubernetes.io/name: kube-state-metrics
+    app.kubernetes.io/instance: ada
+---
+# Source: kube-prometheus-stack/charts/prometheus-node-exporter/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ada-prometheus-node-exporter
+  namespace: monitoring
+  annotations:
+    prometheus.io/scrape: "true"
+  labels:     
+    app: prometheus-node-exporter
+    heritage: Helm
+    release: ada
+    chart: prometheus-node-exporter-3.1.0
+    jobLabel: node-exporter
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9100
+      targetPort: 9100
+      protocol: TCP
+      name: http-metrics
+  selector:
+    app: prometheus-node-exporter
+    release: ada
+---
+# Source: kube-prometheus-stack/templates/alertmanager/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ada-kube-promethe-alertmanager
+  namespace: monitoring
+  labels:
+    app: kube-prometheus-stack-alertmanager
+    self-monitor: "true"
+    
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: ada
+    app.kubernetes.io/version: "34.10.0"
+    app.kubernetes.io/part-of: kube-prometheus-stack
+    chart: kube-prometheus-stack-34.10.0
+    release: "ada"
+    heritage: "Helm"
+spec:
+  ports:
+  - name: http-web
+    port: 9093
+    targetPort: 9093
+    protocol: TCP
+  selector:
+    app.kubernetes.io/name: alertmanager
+    alertmanager: ada-kube-promethe-alertmanager
+  type: "ClusterIP"
+---
+# Source: kube-prometheus-stack/templates/exporters/core-dns/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ada-kube-promethe-coredns
+  labels:
+    app: kube-prometheus-stack-coredns
+    jobLabel: coredns
+    
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: ada
+    app.kubernetes.io/version: "34.10.0"
+    app.kubernetes.io/part-of: kube-prometheus-stack
+    chart: kube-prometheus-stack-34.10.0
+    release: "ada"
+    heritage: "Helm"
+  namespace: kube-system
+spec:
+  clusterIP: None
+  ports:
+    - name: http-metrics
+      port: 9153
+      protocol: TCP
+      targetPort: 9153
+  selector:
+    k8s-app: kube-dns
+---
+# Source: kube-prometheus-stack/templates/exporters/kube-controller-manager/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ada-kube-promethe-kube-controller-manager
+  labels:
+    app: kube-prometheus-stack-kube-controller-manager
+    jobLabel: kube-controller-manager
+    
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: ada
+    app.kubernetes.io/version: "34.10.0"
+    app.kubernetes.io/part-of: kube-prometheus-stack
+    chart: kube-prometheus-stack-34.10.0
+    release: "ada"
+    heritage: "Helm"
+  namespace: kube-system
+spec:
+  clusterIP: None
+  ports:
+    - name: http-metrics
+      port: 10257
+      protocol: TCP
+      targetPort: 10257
+  selector:
+    component: kube-controller-manager
+  type: ClusterIP
+---
+# Source: kube-prometheus-stack/templates/exporters/kube-etcd/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ada-kube-promethe-kube-etcd
+  labels:
+    app: kube-prometheus-stack-kube-etcd
+    jobLabel: kube-etcd
+    
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: ada
+    app.kubernetes.io/version: "34.10.0"
+    app.kubernetes.io/part-of: kube-prometheus-stack
+    chart: kube-prometheus-stack-34.10.0
+    release: "ada"
+    heritage: "Helm"
+  namespace: kube-system
+spec:
+  clusterIP: None
+  ports:
+    - name: http-metrics
+      port: 2379
+      protocol: TCP
+      targetPort: 2379
+  selector:
+    component: etcd
+  type: ClusterIP
+---
+# Source: kube-prometheus-stack/templates/exporters/kube-proxy/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ada-kube-promethe-kube-proxy
+  labels:
+    app: kube-prometheus-stack-kube-proxy
+    jobLabel: kube-proxy
+    
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: ada
+    app.kubernetes.io/version: "34.10.0"
+    app.kubernetes.io/part-of: kube-prometheus-stack
+    chart: kube-prometheus-stack-34.10.0
+    release: "ada"
+    heritage: "Helm"
+  namespace: kube-system
+spec:
+  clusterIP: None
+  ports:
+    - name: http-metrics
+      port: 10249
+      protocol: TCP
+      targetPort: 10249
+  selector:
+    k8s-app: kube-proxy
+  type: ClusterIP
+---
+# Source: kube-prometheus-stack/templates/exporters/kube-scheduler/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ada-kube-promethe-kube-scheduler
+  labels:
+    app: kube-prometheus-stack-kube-scheduler
+    jobLabel: kube-scheduler
+    
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: ada
+    app.kubernetes.io/version: "34.10.0"
+    app.kubernetes.io/part-of: kube-prometheus-stack
+    chart: kube-prometheus-stack-34.10.0
+    release: "ada"
+    heritage: "Helm"
+  namespace: kube-system
+spec:
+  clusterIP: None
+  ports:
+    - name: http-metrics
+      port: 10259
+      protocol: TCP
+      targetPort: 10259
+  selector:
+    component: kube-scheduler
+  type: ClusterIP
+---
+# Source: kube-prometheus-stack/templates/prometheus-operator/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ada-kube-promethe-operator
+  namespace: monitoring
+  labels:
+    app: kube-prometheus-stack-operator
+    
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: ada
+    app.kubernetes.io/version: "34.10.0"
+    app.kubernetes.io/part-of: kube-prometheus-stack
+    chart: kube-prometheus-stack-34.10.0
+    release: "ada"
+    heritage: "Helm"
+spec:
+  ports:
+  - name: https
+    port: 443
+    targetPort: https
+  selector:
+    app: kube-prometheus-stack-operator
+    release: "ada"
+  type: "ClusterIP"
+---
+# Source: kube-prometheus-stack/templates/prometheus/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ada-kube-promethe-prometheus
+  namespace: monitoring
+  labels:
+    app: kube-prometheus-stack-prometheus
+    self-monitor: "true"
+    
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: ada
+    app.kubernetes.io/version: "34.10.0"
+    app.kubernetes.io/part-of: kube-prometheus-stack
+    chart: kube-prometheus-stack-34.10.0
+    release: "ada"
+    heritage: "Helm"
+spec:
+  ports:
+  - name: http-web
+    port: 9090
+    targetPort: 9090
+  publishNotReadyAddresses: false
+  selector:
+    app.kubernetes.io/name: prometheus
+    prometheus: ada-kube-promethe-prometheus
+  type: "ClusterIP"
+---

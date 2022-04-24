@@ -1,0 +1,27 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# generatorOptions:
+#   disableNamesSuffixHash: ture
+configMapGenerator:
+- name: prometheus-configmap
+  env: env.yaml
+resources:
+- clusterrole.yaml
+- configmap.yaml
+- deployment.yaml
+- pod.yaml
+- sc.yaml
+- secret.yaml
+- service-monitor.yaml
+- service.yaml
+vars:
+- name: __APP_NAME__
+  objref:
+    kind: ConfigMap
+    name: prometheus-configmap
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.__APP_NAME__
+
+configurations:
+- params.yaml

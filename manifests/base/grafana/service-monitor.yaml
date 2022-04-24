@@ -1,0 +1,26 @@
+# Source: kube-prometheus-stack/charts/grafana/templates/servicemonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: ada-grafana
+  labels:
+    helm.sh/chart: grafana-6.26.0
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/instance: ada
+    app.kubernetes.io/version: "8.4.5"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  endpoints:
+  - port: http-web
+    scrapeTimeout: 30s
+    honorLabels: true
+    path: /metrics
+    scheme: http
+  jobLabel: "ada"
+  selector:
+    matchLabels:
+        app.kubernetes.io/name: grafana
+        app.kubernetes.io/instance: ada
+  namespaceSelector:
+    matchNames:
+      - monitoring

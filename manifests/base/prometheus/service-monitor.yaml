@@ -1,0 +1,424 @@
+# Source: kube-prometheus-stack/charts/kube-state-metrics/templates/servicemonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: ada-kube-state-metrics
+  namespace: monitoring
+  labels:    
+    helm.sh/chart: kube-state-metrics-4.7.0
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: metrics
+    app.kubernetes.io/part-of: kube-state-metrics
+    app.kubernetes.io/name: kube-state-metrics
+    app.kubernetes.io/instance: ada
+    app.kubernetes.io/version: "2.4.1"
+    release: ada
+spec:
+  jobLabel: app.kubernetes.io/name
+  selector:
+    matchLabels:      
+      app.kubernetes.io/name: kube-state-metrics
+      app.kubernetes.io/instance: ada
+  endpoints:
+    - port: http
+      honorLabels: true
+---
+# Source: kube-prometheus-stack/charts/prometheus-node-exporter/templates/servicemonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: ada-prometheus-node-exporter
+  namespace: monitoring
+  labels:     
+    app: prometheus-node-exporter
+    heritage: Helm
+    release: ada
+    chart: prometheus-node-exporter-3.1.0
+    jobLabel: node-exporter
+spec:
+  jobLabel: jobLabel
+  selector:
+    matchLabels:
+      app: prometheus-node-exporter
+      release: ada
+  endpoints:
+    - port: http-metrics
+      scheme: http
+---
+# Source: kube-prometheus-stack/templates/alertmanager/servicemonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: ada-kube-promethe-alertmanager
+  namespace: monitoring
+  labels:
+    app: kube-prometheus-stack-alertmanager
+    
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: ada
+    app.kubernetes.io/version: "34.10.0"
+    app.kubernetes.io/part-of: kube-prometheus-stack
+    chart: kube-prometheus-stack-34.10.0
+    release: "ada"
+    heritage: "Helm"
+spec:
+  selector:
+    matchLabels:
+      app: kube-prometheus-stack-alertmanager
+      release: "ada"
+      self-monitor: "true"
+  namespaceSelector:
+    matchNames:
+      - "monitoring"
+  endpoints:
+  - port: http-web
+    path: "/metrics"
+---
+# Source: kube-prometheus-stack/templates/exporters/core-dns/servicemonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: ada-kube-promethe-coredns
+  namespace: monitoring
+  labels:
+    app: kube-prometheus-stack-coredns
+    
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: ada
+    app.kubernetes.io/version: "34.10.0"
+    app.kubernetes.io/part-of: kube-prometheus-stack
+    chart: kube-prometheus-stack-34.10.0
+    release: "ada"
+    heritage: "Helm"
+spec:
+  jobLabel: jobLabel
+  selector:
+    matchLabels:
+      app: kube-prometheus-stack-coredns
+      release: "ada"
+  namespaceSelector:
+    matchNames:
+      - "kube-system"
+  endpoints:
+  - port: http-metrics
+    bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+---
+# Source: kube-prometheus-stack/templates/exporters/kube-api-server/servicemonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: ada-kube-promethe-apiserver
+  namespace: monitoring
+  labels:
+    app: kube-prometheus-stack-apiserver
+    
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: ada
+    app.kubernetes.io/version: "34.10.0"
+    app.kubernetes.io/part-of: kube-prometheus-stack
+    chart: kube-prometheus-stack-34.10.0
+    release: "ada"
+    heritage: "Helm"
+spec:
+  endpoints:
+  - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+    port: https
+    scheme: https
+    tlsConfig:
+      caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+      serverName: kubernetes
+      insecureSkipVerify: false
+  jobLabel: component
+  namespaceSelector:
+    matchNames:
+    - default
+  selector:
+    matchLabels:
+      component: apiserver
+      provider: kubernetes
+---
+# Source: kube-prometheus-stack/templates/exporters/kube-controller-manager/servicemonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: ada-kube-promethe-kube-controller-manager
+  namespace: monitoring
+  labels:
+    app: kube-prometheus-stack-kube-controller-manager
+    
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: ada
+    app.kubernetes.io/version: "34.10.0"
+    app.kubernetes.io/part-of: kube-prometheus-stack
+    chart: kube-prometheus-stack-34.10.0
+    release: "ada"
+    heritage: "Helm"
+spec:
+  jobLabel: jobLabel
+  selector:
+    matchLabels:
+      app: kube-prometheus-stack-kube-controller-manager
+      release: "ada"
+  namespaceSelector:
+    matchNames:
+      - "kube-system"
+  endpoints:
+  - port: http-metrics
+    bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+    scheme: https
+    tlsConfig:
+      caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+      insecureSkipVerify: true
+---
+# Source: kube-prometheus-stack/templates/exporters/kube-etcd/servicemonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: ada-kube-promethe-kube-etcd
+  namespace: monitoring
+  labels:
+    app: kube-prometheus-stack-kube-etcd
+    
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: ada
+    app.kubernetes.io/version: "34.10.0"
+    app.kubernetes.io/part-of: kube-prometheus-stack
+    chart: kube-prometheus-stack-34.10.0
+    release: "ada"
+    heritage: "Helm"
+spec:
+  jobLabel: jobLabel
+  selector:
+    matchLabels:
+      app: kube-prometheus-stack-kube-etcd
+      release: "ada"
+  namespaceSelector:
+    matchNames:
+      - "kube-system"
+  endpoints:
+  - port: http-metrics
+    bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+---
+# Source: kube-prometheus-stack/templates/exporters/kube-proxy/servicemonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: ada-kube-promethe-kube-proxy
+  namespace: monitoring
+  labels:
+    app: kube-prometheus-stack-kube-proxy
+    
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: ada
+    app.kubernetes.io/version: "34.10.0"
+    app.kubernetes.io/part-of: kube-prometheus-stack
+    chart: kube-prometheus-stack-34.10.0
+    release: "ada"
+    heritage: "Helm"
+spec:
+  jobLabel: jobLabel
+  selector:
+    matchLabels:
+      app: kube-prometheus-stack-kube-proxy
+      release: "ada"
+  namespaceSelector:
+    matchNames:
+      - "kube-system"
+  endpoints:
+  - port: http-metrics
+    bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+---
+# Source: kube-prometheus-stack/templates/exporters/kube-scheduler/servicemonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: ada-kube-promethe-kube-scheduler
+  namespace: monitoring
+  labels:
+    app: kube-prometheus-stack-kube-scheduler
+    
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: ada
+    app.kubernetes.io/version: "34.10.0"
+    app.kubernetes.io/part-of: kube-prometheus-stack
+    chart: kube-prometheus-stack-34.10.0
+    release: "ada"
+    heritage: "Helm"
+spec:
+  jobLabel: jobLabel
+  selector:
+    matchLabels:
+      app: kube-prometheus-stack-kube-scheduler
+      release: "ada"
+  namespaceSelector:
+    matchNames:
+      - "kube-system"
+  endpoints:
+  - port: http-metrics
+    bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+    scheme: https
+    tlsConfig:
+      caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+      insecureSkipVerify: true
+---
+# Source: kube-prometheus-stack/templates/exporters/kubelet/servicemonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: ada-kube-promethe-kubelet
+  namespace: monitoring
+  labels:
+    app: kube-prometheus-stack-kubelet    
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: ada
+    app.kubernetes.io/version: "34.10.0"
+    app.kubernetes.io/part-of: kube-prometheus-stack
+    chart: kube-prometheus-stack-34.10.0
+    release: "ada"
+    heritage: "Helm"
+spec:
+  endpoints:
+  - port: https-metrics
+    scheme: https
+    tlsConfig:
+      caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+      insecureSkipVerify: true
+    bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+    honorLabels: true
+    relabelings:
+    - sourceLabels:
+      - __metrics_path__
+      targetLabel: metrics_path
+  - port: https-metrics
+    scheme: https
+    path: /metrics/cadvisor
+    honorLabels: true
+    tlsConfig:
+      caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+      insecureSkipVerify: true
+    bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+    relabelings:
+    - sourceLabels:
+      - __metrics_path__
+      targetLabel: metrics_path
+  - port: https-metrics
+    scheme: https
+    path: /metrics/probes
+    honorLabels: true
+    tlsConfig:
+      caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+      insecureSkipVerify: true
+    bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+    relabelings:
+    - sourceLabels:
+      - __metrics_path__
+      targetLabel: metrics_path
+  jobLabel: k8s-app
+  namespaceSelector:
+    matchNames:
+    - kube-system
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kubelet
+      k8s-app: kubelet
+---
+# Source: kube-prometheus-stack/templates/prometheus-operator/servicemonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: ada-kube-promethe-operator
+  namespace: monitoring
+  labels:
+    app: kube-prometheus-stack-operator
+    
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: ada
+    app.kubernetes.io/version: "34.10.0"
+    app.kubernetes.io/part-of: kube-prometheus-stack
+    chart: kube-prometheus-stack-34.10.0
+    release: "ada"
+    heritage: "Helm"
+spec:
+  endpoints:
+  - port: https
+    scheme: https
+    tlsConfig:
+      serverName: ada-kube-promethe-operator
+      ca:
+        secret:
+          name: ada-kube-promethe-admission
+          key: ca
+          optional: false
+    honorLabels: true
+  selector:
+    matchLabels:
+      app: kube-prometheus-stack-operator
+      release: "ada"
+  namespaceSelector:
+    matchNames:
+      - "monitoring"
+---
+# Source: kube-prometheus-stack/templates/prometheus/servicemonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: ada-kube-promethe-prometheus
+  namespace: monitoring
+  labels:
+    app: kube-prometheus-stack-prometheus
+    
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: ada
+    app.kubernetes.io/version: "34.10.0"
+    app.kubernetes.io/part-of: kube-prometheus-stack
+    chart: kube-prometheus-stack-34.10.0
+    release: "ada"
+    heritage: "Helm"
+spec:
+  selector:
+    matchLabels:
+      app: kube-prometheus-stack-prometheus
+      release: "ada"
+      self-monitor: "true"
+  namespaceSelector:
+    matchNames:
+      - "monitoring"
+  endpoints:
+  - port: http-web
+    path: "/metrics"
+---
+# Source: kube-prometheus-stack/templates/prometheus-operator/admission-webhooks/validatingWebhookConfiguration.yaml
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name:  ada-kube-promethe-admission
+  labels:
+    app: kube-prometheus-stack-admission    
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: ada
+    app.kubernetes.io/version: "34.10.0"
+    app.kubernetes.io/part-of: kube-prometheus-stack
+    chart: kube-prometheus-stack-34.10.0
+    release: "ada"
+    heritage: "Helm"
+webhooks:
+  - name: prometheusrulemutate.monitoring.coreos.com
+    failurePolicy: Ignore
+    rules:
+      - apiGroups:
+          - monitoring.coreos.com
+        apiVersions:
+          - "*"
+        resources:
+          - prometheusrules
+        operations:
+          - CREATE
+          - UPDATE
+    clientConfig:
+      service:
+        namespace: monitoring
+        name: ada-kube-promethe-operator
+        path: /admission-prometheusrules/validate
+    admissionReviewVersions: ["v1", "v1beta1"]
+    sideEffects: None
+---

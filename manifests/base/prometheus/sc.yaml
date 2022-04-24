@@ -1,0 +1,217 @@
+# Source: kube-prometheus-stack/charts/kube-state-metrics/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:    
+    helm.sh/chart: kube-state-metrics-4.7.0
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: metrics
+    app.kubernetes.io/part-of: kube-state-metrics
+    app.kubernetes.io/name: kube-state-metrics
+    app.kubernetes.io/instance: ada
+    app.kubernetes.io/version: "2.4.1"
+    release: ada
+  name: ada-kube-state-metrics
+  namespace: monitoring
+imagePullSecrets:
+  []
+---
+# Source: kube-prometheus-stack/charts/prometheus-node-exporter/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: ada-prometheus-node-exporter
+  namespace: monitoring
+  labels:
+    app: prometheus-node-exporter
+    chart: prometheus-node-exporter-3.1.0
+    release: "ada"
+    heritage: "Helm"
+  annotations:
+    {}
+imagePullSecrets:
+  []
+---
+# Source: kube-prometheus-stack/templates/alertmanager/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: ada-kube-promethe-alertmanager
+  namespace: monitoring
+  labels:
+    app: kube-prometheus-stack-alertmanager
+    app.kubernetes.io/name: kube-prometheus-stack-alertmanager
+    app.kubernetes.io/component: alertmanager
+    
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: ada
+    app.kubernetes.io/version: "34.10.0"
+    app.kubernetes.io/part-of: kube-prometheus-stack
+    chart: kube-prometheus-stack-34.10.0
+    release: "ada"
+    heritage: "Helm"
+---
+# Source: kube-prometheus-stack/templates/prometheus-operator/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: ada-kube-promethe-operator
+  namespace: monitoring
+  labels:
+    app: kube-prometheus-stack-operator
+    app.kubernetes.io/name: kube-prometheus-stack-prometheus-operator
+    app.kubernetes.io/component: prometheus-operator
+    
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: ada
+    app.kubernetes.io/version: "34.10.0"
+    app.kubernetes.io/part-of: kube-prometheus-stack
+    chart: kube-prometheus-stack-34.10.0
+    release: "ada"
+    heritage: "Helm"
+---
+# Source: kube-prometheus-stack/templates/prometheus/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: ada-kube-promethe-prometheus
+  namespace: monitoring
+  labels:
+    app: kube-prometheus-stack-prometheus
+    app.kubernetes.io/name: kube-prometheus-stack-prometheus
+    app.kubernetes.io/component: prometheus
+    
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: ada
+    app.kubernetes.io/version: "34.10.0"
+    app.kubernetes.io/part-of: kube-prometheus-stack
+    chart: kube-prometheus-stack-34.10.0
+    release: "ada"
+    heritage: "Helm"
+---
+# Source: kube-prometheus-stack/templates/prometheus-operator/admission-webhooks/job-patch/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name:  ada-kube-promethe-admission
+  namespace: monitoring
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade,post-install,post-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+  labels:
+    app: kube-prometheus-stack-admission    
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: ada
+    app.kubernetes.io/version: "34.10.0"
+    app.kubernetes.io/part-of: kube-prometheus-stack
+    chart: kube-prometheus-stack-34.10.0
+    release: "ada"
+    heritage: "Helm"
+---
+# Source: kube-prometheus-stack/templates/prometheus-operator/admission-webhooks/job-patch/clusterrole.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name:  ada-kube-promethe-admission
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade,post-install,post-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+  labels:
+    app: kube-prometheus-stack-admission    
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: ada
+    app.kubernetes.io/version: "34.10.0"
+    app.kubernetes.io/part-of: kube-prometheus-stack
+    chart: kube-prometheus-stack-34.10.0
+    release: "ada"
+    heritage: "Helm"
+rules:
+  - apiGroups:
+      - admissionregistration.k8s.io
+    resources:
+      - validatingwebhookconfigurations
+      - mutatingwebhookconfigurations
+    verbs:
+      - get
+      - update
+---
+# Source: kube-prometheus-stack/templates/prometheus-operator/admission-webhooks/job-patch/clusterrolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name:  ada-kube-promethe-admission
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade,post-install,post-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+  labels:
+    app: kube-prometheus-stack-admission    
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: ada
+    app.kubernetes.io/version: "34.10.0"
+    app.kubernetes.io/part-of: kube-prometheus-stack
+    chart: kube-prometheus-stack-34.10.0
+    release: "ada"
+    heritage: "Helm"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: ada-kube-promethe-admission
+subjects:
+  - kind: ServiceAccount
+    name: ada-kube-promethe-admission
+    namespace: monitoring
+---
+# Source: kube-prometheus-stack/templates/prometheus-operator/admission-webhooks/job-patch/role.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name:  ada-kube-promethe-admission
+  namespace: monitoring
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade,post-install,post-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+  labels:
+    app: kube-prometheus-stack-admission    
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: ada
+    app.kubernetes.io/version: "34.10.0"
+    app.kubernetes.io/part-of: kube-prometheus-stack
+    chart: kube-prometheus-stack-34.10.0
+    release: "ada"
+    heritage: "Helm"
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+    verbs:
+      - get
+      - create
+---
+# Source: kube-prometheus-stack/templates/prometheus-operator/admission-webhooks/job-patch/rolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name:  ada-kube-promethe-admission
+  namespace: monitoring
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade,post-install,post-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+  labels:
+    app: kube-prometheus-stack-admission    
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: ada
+    app.kubernetes.io/version: "34.10.0"
+    app.kubernetes.io/part-of: kube-prometheus-stack
+    chart: kube-prometheus-stack-34.10.0
+    release: "ada"
+    heritage: "Helm"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: ada-kube-promethe-admission
+subjects:
+  - kind: ServiceAccount
+    name: ada-kube-promethe-admission
+    namespace: monitoring
+---

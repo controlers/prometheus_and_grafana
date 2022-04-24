@@ -1,0 +1,101 @@
+
+# Source: kube-prometheus-stack/templates/prometheus-operator/admission-webhooks/job-patch/job-createSecret.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name:  ada-kube-promethe-admission-create
+  namespace: monitoring
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+  labels:
+    app: kube-prometheus-stack-admission-create    
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: ada
+    app.kubernetes.io/version: "34.10.0"
+    app.kubernetes.io/part-of: kube-prometheus-stack
+    chart: kube-prometheus-stack-34.10.0
+    release: "ada"
+    heritage: "Helm"
+spec:
+  template:
+    metadata:
+      name:  ada-kube-promethe-admission-create
+      labels:
+        app: kube-prometheus-stack-admission-create        
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/instance: ada
+        app.kubernetes.io/version: "34.10.0"
+        app.kubernetes.io/part-of: kube-prometheus-stack
+        chart: kube-prometheus-stack-34.10.0
+        release: "ada"
+        heritage: "Helm"
+    spec:
+      containers:
+        - name: create
+          image: k8s.gcr.io/ingress-nginx/kube-webhook-certgen:v1.1.1
+          imagePullPolicy: IfNotPresent
+          args:
+            - create
+            - --host=ada-kube-promethe-operator,ada-kube-promethe-operator.monitoring.svc
+            - --namespace=monitoring
+            - --secret-name=ada-kube-promethe-admission
+          resources:
+            {}
+      restartPolicy: OnFailure
+      serviceAccountName: ada-kube-promethe-admission
+      securityContext:
+        runAsGroup: 2000
+        runAsNonRoot: true
+        runAsUser: 2000
+---
+# Source: kube-prometheus-stack/templates/prometheus-operator/admission-webhooks/job-patch/job-patchWebhook.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name:  ada-kube-promethe-admission-patch
+  namespace: monitoring
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+  labels:
+    app: kube-prometheus-stack-admission-patch    
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: ada
+    app.kubernetes.io/version: "34.10.0"
+    app.kubernetes.io/part-of: kube-prometheus-stack
+    chart: kube-prometheus-stack-34.10.0
+    release: "ada"
+    heritage: "Helm"
+spec:
+  template:
+    metadata:
+      name:  ada-kube-promethe-admission-patch
+      labels:
+        app: kube-prometheus-stack-admission-patch        
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/instance: ada
+        app.kubernetes.io/version: "34.10.0"
+        app.kubernetes.io/part-of: kube-prometheus-stack
+        chart: kube-prometheus-stack-34.10.0
+        release: "ada"
+        heritage: "Helm"
+    spec:
+      containers:
+        - name: patch
+          image: k8s.gcr.io/ingress-nginx/kube-webhook-certgen:v1.1.1
+          imagePullPolicy: IfNotPresent
+          args:
+            - patch
+            - --webhook-name=ada-kube-promethe-admission
+            - --namespace=monitoring
+            - --secret-name=ada-kube-promethe-admission
+            - --patch-failure-policy=Fail
+          resources:
+            {}
+      restartPolicy: OnFailure
+      serviceAccountName: ada-kube-promethe-admission
+      securityContext:
+        runAsGroup: 2000
+        runAsNonRoot: true
+        runAsUser: 2000

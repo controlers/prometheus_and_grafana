@@ -1,0 +1,20 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: monitoring
+commonAnnotations:
+  App: prometheus-operator-manifests
+
+bases:
+- ../../manifests/base/grafana
+resources:
+# -
+# -
+# patchesStratategicMerge:
+# -
+images:
+- name: quay.io/kiwigrid/k8s-sidecar:1.15.6
+  newTag: "1.15.6"
+  newName: cs0621/k8s-sidecar
+- name: grafana/grafana:8.4.5
+  newTag: "8.4.5"
+  newName: cs0621/grafana

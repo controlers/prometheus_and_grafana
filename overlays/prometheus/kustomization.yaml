@@ -1,0 +1,35 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: monitoring
+commonAnnotations:
+  App: prometheus-operator-manifests
+
+bases:
+- ../../manifests/base/prometheus
+resources:
+# -
+# -
+# patchesStratategicMerge:
+# -
+images:
+- name: quay.io/prometheus/node-exporter:v1.3.1
+  newTag: "v1.3.1"
+  newName: cs0621/node-exporter
+- name: quay.io/prometheus/alertmanager:v0.24.0
+  newTag: "v0.24.0"
+  newName: cs0621/alertmanager
+- name: quay.io/kiwigrid/k8s-sidecar:1.15.6
+  newTag: "1.15.6"
+  newName: cs0621/k8s-sidecar
+- name: k8s.gcr.io/kube-state-metrics/kube-state-metrics:v2.4.1
+  newTag: "v2.4.1"
+  newName: cs0621/kube-state-metrics
+- name: quay.io/prometheus-operator/prometheus-operator:v0.55.0
+  newTag: "v0.55.0"
+  newName: cs0621/prometheus-operator
+- name: quay.io/prometheus/prometheus:v2.34.0
+  newTag: "2.34.0"
+  newName: cs0621/prometheus
+- name: k8s.gcr.io/ingress-nginx/kube-webhook-certgen:v1.1.1
+  newTag: "v1.1.1"
+  newName: cs0621/kube-webhook-certgen

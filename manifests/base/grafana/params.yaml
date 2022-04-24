@@ -1,0 +1,33 @@
+varReference:
+- path: metadata/name
+  kind: Deployment
+- path: metadata/namespaces
+  kind: Deployment
+- path: metadata/labels
+  kind: Deployment
+- path: spec/template/spec/containers/name
+  kind: Deployment
+- path: spec/template/spec/volumes/name
+  kind: Deployment
+- path: sepc/template/spec/containers/volumeMounts/name
+  kind: Deployment
+- path: spec/template/spec/containers/envFrom/configMapRef/name
+  kind: Deployment
+- path: spec/template/spec/containers/envfrom/secretRef/name
+  kind: Deployment
+- path: spec/template/spec/volumes/configMap/name
+  kind: Deployment
+- path: spec/selector/matchLabels
+  kind: Deployment
+- path: spec/template/spec/containers/image
+  kind: Deployment
+- path: spec/template/spec/containers/image
+  kind: DaemonSet
+- path: spec/image
+  kind: Alertmanager
+- path: spec/image
+  kind: Prometheus
+- path: spec/template/spec/containers/image
+  kind: Job
+  
+
