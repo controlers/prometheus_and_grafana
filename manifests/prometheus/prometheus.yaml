@@ -24,6 +24,13 @@ spec:
         apiVersion: v2
   image: "cs0621/prometheus:v2.34.0"
   version: v2.34.0
+  storage:
+    volumeClaimTemplate:
+      spec:
+        storageClassName: prometheus-data-db
+        resources:
+          requests:
+            storage: 10Gi
   externalUrl: http://ada-kube-promethe-prometheus.monitoring:9090
   paused: false
   replicas: 1

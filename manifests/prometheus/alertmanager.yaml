@@ -18,6 +18,13 @@ metadata:
 spec:
   image: "cs0621/alertmanager:v0.24.0"
   version: v0.24.0
+  storage:
+    volumeClaimTemplate:
+      spec:
+        storageClassName: prometheus-data-db
+        resources:
+          requests:
+            storage: 10Gi
   replicas: 1
   listenLocal: false
   serviceAccountName: ada-kube-promethe-alertmanager

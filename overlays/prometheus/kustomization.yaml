@@ -5,7 +5,7 @@ commonAnnotations:
   App: prometheus-operator-manifests
 
 bases:
-- ../../manifests/base/prometheus
+- ../../manifests/prometheus
 resources:
 # -
 # -
