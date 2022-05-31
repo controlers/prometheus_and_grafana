@@ -111,7 +111,7 @@ spec:
             - name: GF_DATABASE_USER
               value: gafana
             - name: GF_DATABASE_PASSWORD
-              value: xxxxx
+              value: "xxxxx"
             - name: GF_DATABASE_SSL_MODE
               value: "false"
             - name: sc-dashboard-provider
